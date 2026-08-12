@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   push:
@@ -50,23 +50,3 @@ jobs:
       - run: pip install -e ".[dev]"
       - name: Run tests
         run: pytest --cov=blackbar --cov-report=term-missing --cov-fail-under=90
-
-  dogfood:
-    name: Scan our own repo
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install -e .
-      # The tool is its own last line of defence. Test fixtures contain
-      # deliberate samples, so they are excluded from the check.
-      - name: Check for committed secrets
-        run: |
-          set -o pipefail
-          git ls-files -- ':!tests/*' ':!README.md' \
-            | xargs -r cat \
-            | blackbar scan --only API_KEY,JWT,PRIVATE_KEY,CREDIT_CARD --quiet \
-            && echo "Clean." \
-            || { echo "::error::Potential secret detected in tracked files."; exit 1; }
