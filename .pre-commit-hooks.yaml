@@ -1,0 +1,6 @@
+- id: blackbar
+  name: blackbar (block committed secrets and PII)
+  description: Fail the commit if credentials or PII appear in staged files.
+  entry: blackbar scan --quiet --only API_KEY,JWT,PRIVATE_KEY,CREDIT_CARD,IBAN
+  language: python
+  types: [text]
